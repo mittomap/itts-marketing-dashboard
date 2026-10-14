@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IELTS The Tutors — Marketing Command Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            itts: {
+              red: '#D91F26',
+              darkRed: '#991B1B',
+              navy: '#0F172A',
+              gold: '#F59E0B'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+    .itts-card { background: #FFFFFF; border: 1px solid #E2E8F0; box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04); }
+    .itts-gradient { background: linear-gradient(135deg, #D91F26 0%, #991B1B 100%); }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+  </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+
+  <!-- SIDEBAR CHUẨN THƯƠNG HIỆU IELTS THE TUTORS -->
+  <aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0">
+    <div>
+      <div class="h-20 px-6 flex items-center gap-3 border-b border-slate-100">
+        <div class="w-11 h-11 rounded-2xl itts-gradient flex items-center justify-center shadow-md shadow-red-600/25 text-white font-extrabold text-sm">
+          ITTs
+        </div>
+        <div>
+          <h1 class="font-extrabold text-sm text-itts-navy leading-none">IELTS THE TUTORS</h1>
+          <span class="inline-block mt-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-red-50 text-itts-red border border-red-100">
+            Marketing Hub
+          </span>
+        </div>
+      </div>
+
+      <!-- Menu Chuyển Đổi 4 Phân Khu Của Sheet Dashboard -->
+      <div class="p-4 space-y-5">
+        <div>
+          <p class="px-3 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-2">Phân Khu Báo Cáo</p>
+          <nav class="space-y-1.5">
+            <button onclick="showSection('all')" id="btn-all" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold itts-gradient text-white shadow-sm shadow-red-600/20">
+              <i data-lucide="layout-grid" class="w-4 h-4"></i>
+              Toàn Bộ Dashboard (9 Khối)
+            </button>
+            <button onclick="showSection('leads')" id="btn-leads" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-red-50 hover:text-itts-red transition">
+              <i data-lucide="filter" class="w-4 h-4"></i>
+              Phễu Lead CRM & Chất Lượng
+            </button>
+            <button onclick="showSection('revenue')" id="btn-revenue" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-red-50 hover:text-itts-red transition">
+              <i data-lucide="building-2" class="w-4 h-4"></i>
+              Doanh Thu Chi Nhánh & Sale
+            </button>
+            <button onclick="showSection('daily')" id="btn-daily" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-red-50 hover:text-itts-red transition">
+              <i data-lucide="calendar-days" class="w-4 h-4"></i>
+              Nhật Ký Đa Kênh Theo Ngày
+            </button>
+          </nav>
+        </div>
+
+        <!-- Khối Giải trình công thức tính Target Lead (A29:B39) -->
+        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-extrabold uppercase text-slate-500">Cơ Cấu Tính Lead (A29:B39)</span>
+            <span class="text-xs font-extrabold text-itts-red" id="sideFinalLead">128 MQL</span>
+          </div>
+          <div id="leadFormulaList" class="space-y-1 text-[11px] text-slate-600"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer thông tin kỳ báo cáo -->
+    <div class="p-4 border-t border-slate-100 bg-slate-50 text-xs space-y-1">
+      <div class="flex justify-between">
+        <span class="text-slate-400">Kỳ dữ liệu:</span>
+        <strong id="sideDateRange" class="text-itts-navy">01/10 - 31/10/2026</strong>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-slate-400">Trạng thái:</span>
+        <strong id="sideUpdated" class="text-emerald-600">Live API Connected</strong>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 flex flex-col overflow-hidden">
+    
+    <!-- HEADER BAR ĐIỀU KHIỂN THÁNG (B3) & NĂM (B2) -->
+    <header class="h-20 px-8 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h2 class="text-lg font-extrabold text-itts-navy">ITTs Marketing Executive Dashboard</h2>
+          <span id="liveBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Khớp 100% Sheet Dashboard
+          </span>
+        </div>
+        <p id="lmsStatusText" class="text-xs text-slate-500 font-medium mt-0.5">
+          Đồng bộ trực tiếp với Google Sheets • Tự động tính toán theo B2 (Năm) & B3 (Tháng)
+        </p>
+      </div>
+
+      <!-- Bộ chọn Tháng & Năm -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <span class="text-[11px] font-bold text-slate-500 px-2.5">Tháng (B3):</span>
+          <select id="selMonth" onchange="fetchPeriodData()" class="bg-white text-xs font-extrabold text-itts-navy rounded-lg px-3 py-1.5 border border-slate-200 focus:outline-none focus:border-itts-red">
+            <option value="1">Tháng 01</option><option value="2">Tháng 02</option><option value="3">Tháng 03</option>
+            <option value="4">Tháng 04</option><option value="5">Tháng 05</option><option value="6">Tháng 06</option>
+            <option value="7">Tháng 07</option><option value="8">Tháng 08</option><option value="9">Tháng 09</option>
+            <option value="10" selected>Tháng 10</option><option value="11">Tháng 11</option><option value="12">Tháng 12</option>
+          </select>
+        </div>
+
+        <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <span class="text-[11px] font-bold text-slate-500 px-2.5">Năm (B2):</span>
+          <select id="selYear" onchange="fetchPeriodData()" class="bg-white text-xs font-extrabold text-itts-navy rounded-lg px-3 py-1.5 border border-slate-200 focus:outline-none focus:border-itts-red">
+            <option value="2026" selected>2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+          </select>
+        </div>
+
+        <button onclick="fetchPeriodData()" class="bg-slate-900 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 hover:bg-slate-800 transition">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          Làm mới
+        </button>
+
+        <button onclick="window.print()" class="itts-gradient text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md shadow-red-600/20 flex items-center gap-2 hover:opacity-95 transition">
+          <i data-lucide="printer" class="w-4 h-4"></i>
+          In Báo Cáo
+        </button>
+      </div>
+    </header>
+
+    <!-- KHU VỰC CUỘN CHÍNH -->
+    <div class="flex-1 overflow-y-auto p-8 space-y-7 custom-scroll">
+
+      <!-- PHẦN 1: 5 THẺ CHỈ SỐ BẮC ĐẨU (A8:D13 & W34:Y34) -->
+      <section id="sec-overview" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
+          <div class="itts-card rounded-2xl p-4 border-t-4 border-t-itts-red">
+            <div class="flex justify-between items-center">
+              <span class="text-[11px] font-extrabold uppercase text-slate-400">Doanh Thu (C8)</span>
+              <span id="kpiRevPct" class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-red-50 text-itts-red">28,1%</span>
+            </div>
+            <h3 id="kpiRevActual" class="text-xl font-extrabold text-itts-navy mt-2">477.301.120 đ</h3>
+            <p class="text-[11px] text-slate-500 mt-1">Mục tiêu (B8): <strong id="kpiRevTarget" class="text-slate-700">1.700.000.000 đ</strong></p>
+            <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-2.5">
+              <div id="barRev" class="h-full itts-gradient" style="width: 28.1%"></div>
+            </div>
+          </div>
+
+          <div class="itts-card rounded-2xl p-4 border-t-4 border-t-slate-800">
+            <div class="flex justify-between items-center">
+              <span class="text-[11px] font-extrabold uppercase text-slate-400">Ngân Sách Đã Dùng (C12)</span>
+              <span id="kpiBudgetRemPct" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">Còn: 56,5%</span>
+            </div>
+            <h3 id="kpiBudgetSpent" class="text-xl font-extrabold text-itts-navy mt-2">82.175.536 đ</h3>
+            <p class="text-[11px] text-slate-500 mt-1">Tổng NS (B12): <strong id="kpiBudgetTotal" class="text-slate-700">189.000.000 đ</strong></p>
+            <p class="text-[10px] text-itts-red font-bold mt-1">Định mức ngày (B13): <span id="kpiDailyAvg">6.130.576 đ</span></p>
+          </div>
+
+          <div class="itts-card rounded-2xl p-4 border-t-4 border-t-blue-600">
+            <div class="flex justify-between items-center">
+              <span class="text-[11px] font-extrabold uppercase text-slate-400">Target Lead (C10)</span>
+              <span id="kpiLeadPct" class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-blue-50 text-blue-700">31,9%</span>
+            </div>
+            <h3 id="kpiLeadActual" class="text-xl font-extrabold text-itts-navy mt-2">128 Leads</h3>
+            <p class="text-[11px] text-slate-500 mt-1">Mục tiêu (B10): <strong id="kpiLeadTarget" class="text-slate-700">400 Leads</strong></p>
+            <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-2.5">
+              <div id="barLead" class="h-full bg-blue-600" style="width: 31.9%"></div>
+            </div>
+          </div>
+
+          <div class="itts-card rounded-2xl p-4 border-t-4 border-t-emerald-600">
+            <div class="flex justify-between items-center">
+              <span class="text-[11px] font-extrabold uppercase text-slate-400">Mess To Lead (C9)</span>
+              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">MT: <span id="kpiM2LTarget">70%</span></span>
+            </div>
+            <h3 id="kpiM2LActual" class="text-xl font-extrabold text-itts-navy mt-2">66,1%</h3>
+            <p class="text-[11px] text-slate-500 mt-1">Cost/Mess (C11): <strong id="kpiCostMessActual" class="text-itts-red">547.499 đ</strong></p>
+            <p class="text-[10px] text-slate-400 mt-1">Chuẩn Cost/Mess (B11): <span id="kpiCostMessTarget">300.000 đ</span></p>
+          </div>
+
+          <div class="itts-card rounded-2xl p-4 border-t-4 border-t-amber-500">
+            <div class="flex justify-between items-center">
+              <span class="text-[11px] font-extrabold uppercase text-slate-400">Paid Cases (X34)</span>
+              <span class="text-[11px] font-extrabold px-2 py-0.5 rounded bg-amber-50 text-amber-700">CR: 40,0%</span>
+            </div>
+            <h3 id="kpiPaidCases" class="text-xl font-extrabold text-itts-navy mt-2">51 Cases</h3>
+            <p class="text-[11px] text-slate-500 mt-1">AOV (Y34): <strong id="kpiAov" class="text-slate-800">9.358.845 đ</strong></p>
+            <p class="text-[10px] text-emerald-600 font-bold mt-1" id="kpiTotalMessLine">Tổng Mess (H34): 178 | Q-Mess (I34): 84</p>
+          </div>
+        </div>
+
+        <!-- BẢNG PHÂN BỔ NGÂN SÁCH THEO KÊNH (A15:D19) & BIỂU ĐỒ NGÀY -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="itts-card rounded-2xl p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-5 rounded-full itts-gradient"></span>
+                  <h3 class="text-sm font-extrabold text-itts-navy">Phân Bổ Ngân Sách Kênh (A15:D19)</h3>
+                </div>
+                <span class="text-[10px] font-bold text-slate-400">Đã trừ Seeding & HR</span>
+              </div>
+              <div id="channelBudgetList" class="space-y-3"></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between text-xs">
+              <span class="text-slate-500 font-semibold">Chi phí Seeding riêng (Z34):</span>
+              <strong id="seedingTotal" class="text-itts-navy">1.046.691 đ (83 Mess)</strong>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2 itts-card rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-5 rounded-full itts-gradient"></span>
+                <div>
+                  <h3 class="text-sm font-extrabold text-itts-navy">Diễn Biến Doanh Thu & Chi Tiêu Ads Theo Ngày (F3:Y33)</h3>
+                  <p class="text-xs text-slate-500">So sánh Doanh thu thực thu (Cột W) và Chi tiêu Ads (FB + Zalo + TikTok)</p>
+                </div>
+              </div>
+            </div>
+            <div class="h-60">
+              <canvas id="chartDailyTrend"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHẦN 2: PHỄU NGUỒN LEAD CRM (F36:K51), TRẠNG THÁI LEAD (F54:J64) & MESS CHƯA CHUYỂN ĐỔI (F66:J73) -->
+      <section id="sec-leads" class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div class="itts-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-5 rounded-full bg-blue-600"></span>
+              <div>
+                <h3 class="text-sm font-extrabold text-itts-navy">Ma Trận Nguồn Lead CRM (F36:K51)</h3>
+                <p class="text-[11px] text-slate-500">Theo dõi Đã nhập • Chưa nhập • Paid Case</p>
+              </div>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 text-[10px] font-extrabold uppercase border-b border-slate-200">
+                <tr>
+                  <th class="py-2.5 px-2">Nguồn (F)</th>
+                  <th class="py-2.5 px-2 text-center">Đã nhập (G)</th>
+                  <th class="py-2.5 px-2 text-center">Chưa nhập (H)</th>
+                  <th class="py-2.5 px-2 text-center">Paid (I)</th>
+                  <th class="py-2.5 px-2 text-right">Tỷ trọng (J)</th>
+                </tr>
+              </thead>
+              <tbody id="tableLeadSources" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="itts-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-5 rounded-full bg-amber-500"></span>
+              <div>
+                <h3 class="text-sm font-extrabold text-itts-navy">Trạng Thái Chăm Sóc Lead CRM (F54:J64)</h3>
+                <p class="text-[11px] text-slate-500">Bóc tách riêng cột TikTok (Cột J) để kiểm soát chất lượng</p>
+              </div>
+            </div>
+          </div>
+          <div id="crmStatusContainer" class="space-y-2.5"></div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="itts-card rounded-2xl p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-2 h-5 rounded-full bg-emerald-600"></span>
+              <div>
+                <h3 class="text-sm font-extrabold text-itts-navy">Chất Lượng Lead Center (L36:N49)</h3>
+                <p class="text-[11px] text-slate-500">Phân loại Mess Đủ tiêu chuẩn & Tiếp nhận</p>
+              </div>
+            </div>
+            <div id="leadCenterList" class="grid grid-cols-3 gap-2 text-center"></div>
+          </div>
+
+          <div class="itts-card rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-5 rounded-full itts-gradient"></span>
+                <h3 class="text-sm font-extrabold text-itts-navy">Lý Do Mess Chưa Chuyển Đổi (F66:J73)</h3>
+              </div>
+            </div>
+            <div id="unconvertedMessList" class="space-y-2 mt-3"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHẦN 3: DOANH THU CHI NHÁNH (W39:Y48), TỆP KHÁCH (W50:Z70), TƯ VẤN VIÊN (W72:AA79) & DỰ THU -->
+      <section id="sec-revenue" class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div class="itts-card rounded-2xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-5 rounded-full itts-gradient"></span>
+                <h3 class="text-sm font-extrabold text-itts-navy">Doanh Thu Theo Chi Nhánh (W39:Y48)</h3>
+              </div>
+            </div>
+            <div id="branchRevList" class="space-y-2.5"></div>
+          </div>
+
+          <div class="mt-5 pt-4 border-t border-slate-100">
+            <h4 class="text-xs font-extrabold uppercase text-slate-400 mb-2.5">Cơ Cấu Tệp Khách Đóng Phí (W50:Z70)</h4>
+            <div id="segmentRevList" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <div class="itts-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-5 rounded-full bg-amber-500"></span>
+              <div>
+                <h3 class="text-sm font-extrabold text-itts-navy">Hiệu Suất Tư Vấn Viên (W72:AA79)</h3>
+                <p class="text-[11px] text-slate-500">Lead nhận được ➔ Học viên đóng phí ➔ Doanh thu & CR%</p>
+              </div>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 text-[10px] font-extrabold uppercase border-b border-slate-200">
+                <tr>
+                  <th class="py-3 px-2.5">Tư vấn viên (W)</th>
+                  <th class="py-3 px-2 text-center">Lead (X)</th>
+                  <th class="py-3 px-2 text-center">HV (Y)</th>
+                  <th class="py-3 px-2.5 text-right">Doanh thu (Z)</th>
+                  <th class="py-3 px-2 text-right">CR (AA)</th>
+                </tr>
+              </thead>
+              <tbody id="salesRepTable" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="itts-card rounded-2xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-5 rounded-full bg-itts-red"></span>
+                <div>
+                  <h3 class="text-sm font-extrabold text-itts-navy">Theo Dõi Dự Thu Học Phí (Tab Dự thu)</h3>
+                  <p class="text-[11px] text-slate-500">Phải thu trong tháng, Quá hạn & Khoản chờ thu</p>
+                </div>
+              </div>
+            </div>
+            <div id="duThuListBox" class="space-y-2.5 max-h-[340px] overflow-y-auto custom-scroll pr-1"></div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+            <span class="font-bold text-slate-500">Tổng phải thu hết hạn:</span>
+            <strong id="totalOverdueText" class="text-sm font-extrabold text-itts-red">60.480.000 đ</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- PHẦN 4: BẢNG NHẬT KÝ ĐA KÊNH THEO TỪNG NGÀY (F2:AE34) -->
+      <section id="sec-daily" class="itts-card rounded-2xl overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-5 rounded-full itts-gradient"></span>
+            <div>
+              <h3 class="text-sm font-extrabold text-itts-navy">Bảng Nhật Ký Quảng Cáo & Doanh Thu Theo Ngày (F2:AE34)</h3>
+              <p class="text-xs text-slate-500">Chốt dòng Tổng Cộng tại Dòng 34 • Tự động cập nhật theo biến Tháng/Năm</p>
+            </div>
+          </div>
+          <input type="text" id="filterDay" oninput="renderDailyLog()" placeholder="Lọc theo ngày (vd: 11-10)..." 
+                 class="bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:border-itts-red w-56">
+        </div>
+
+        <div class="overflow-x-auto max-h-[480px] custom-scroll">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead class="bg-slate-100 text-slate-600 uppercase text-[10px] font-extrabold tracking-wider sticky top-0 z-10 border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-3">Ngày (F)</th>
+                <th class="py-3 px-3 text-right bg-blue-50/70 text-blue-900">Chi tiêu FB (G)</th>
+                <th class="py-3 px-2.5 text-center bg-blue-50/70 text-blue-900">Mess (H)</th>
+                <th class="py-3 px-2.5 text-center bg-blue-50/70 text-blue-900">Q-Mess (I)</th>
+                <th class="py-3 px-2.5 text-center bg-blue-50/70 text-blue-900">Lead CRM (J)</th>
+                <th class="py-3 px-3 text-right bg-blue-50/70 text-blue-900">CPL Q-Mess (L)</th>
+                <th class="py-3 px-3 text-right">Zalo Chi (P)</th>
+                <th class="py-3 px-2.5 text-center">Zalo Mess (Q)</th>
+                <th class="py-3 px-3 text-right">TikTok Chi (T)</th>
+                <th class="py-3 px-2.5 text-center">TT Conv (U)</th>
+                <th class="py-3 px-3 text-right bg-red-50/70 text-itts-red">Doanh Thu (W)</th>
+                <th class="py-3 px-2.5 text-center bg-red-50/70 text-itts-red">Paid (X)</th>
+                <th class="py-3 px-3 text-right bg-red-50/70 text-itts-red">AOV (Y)</th>
+                <th class="py-3 px-3 text-right text-slate-500">Seeding (Z)</th>
+              </tr>
+            </thead>
+            <tbody id="dailyLogBody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
+            <tfoot id="dailyLogFoot" class="bg-slate-900 text-white font-extrabold sticky bottom-0"></tfoot>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // ĐÃ GẮN SẴN LINK GOOGLE APPS SCRIPT API CỦA ANH LUÂN:
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyZCDgusMvOo8KVYj0cKMpm0OnI6t71cF8_n3Ehq51iW19RFfvHbQX4nn2NEL7Kfb8I6Q/exec';
+
+    // DỮ LIỆU KHỞI TẠO MẶC ĐỊNH TỪ THÁNG 10/2026 (HIỂN THỊ TỨC THÌ TRONG LÚC CHỜ API ĐỒNG BỘ)
+    let STATE = {
+      overview: {
+        year: '2026', month: '10', startDate: '01/10/2026', endDate: '31/10/2026', daysInMonth: '31',
+        revenue: { target: '1.700.000.000 đ', actual: '477.301.120 đ', pct: '28,1%' },
+        messToLead: { target: '70%', actual: '66,1%' },
+        targetLead: { target: '400', actual: '128', pct: '31,9%' },
+        costPerMess: { target: '300.000 đ', actual: '547.499 đ' },
+        budget: { total: '189.000.000 đ', spent: '82.175.536 đ', remaining: '106.824.464 đ', dailyAvg: '6.130.576 đ', remainingPct: 'Còn lại: 56,5%' },
+        channelBudget: [
+          { channel: 'Facebook Ads', budget: '154.000.000 đ', expectedLeads: '350', spent: '70.079.928 đ' },
+          { channel: 'TikTok Ads', budget: '30.000.000 đ', expectedLeads: '30', spent: '6.696.608 đ' },
+          { channel: 'Zalo OA', budget: '5.000.000 đ', expectedLeads: '10', spent: '5.399.000 đ' },
+          { channel: 'Google Ads', budget: '0 đ', expectedLeads: '0', spent: '0 đ' }
+        ],
+        leadFormulaBreakdown: [
+          { label: 'Lead CRM đã nhập (B30)', val: '260' },
+          { label: 'So khớp chưa nhập (B31)', val: '22' },
+          { label: '- 1/2 Referral (B36)', val: '-1,5' },
+          { label: 'Tổng trước lọc (Σ B39)', val: '281' }
+        ]
+      },
+      dailyTotal: {
+        date: 'Tổng (Dòng 34)', fbSpend: '70.079.928 đ', fbMess: '178', fbQMess: '84', fbLeadCrm: '260',
+        fbCplMess: '393.707 đ', fbCplQMess: '834.285 đ', zaloSpend: '5.399.000 đ', zaloMess: '32', zaloLead: '3',
+        ttSpend: '6.696.608 đ', ttConv: '158', ttCpl: '42.384 đ', revenue: '477.301.120 đ', paidCases: '51', aov: '9.358.845 đ',
+        seedSpend: '1.046.691 đ', seedMess: '83'
+      },
+      dailyRows: [
+        { date: '14-10-2026', fbSpend: '661.045 đ', fbMess: '5', fbQMess: '1', fbLeadCrm: '0', fbCplQMess: '661.045 đ', zaloSpend: '0 đ', zaloMess: '0', ttSpend: '0 đ', ttConv: '0', revenue: '30.830.000 đ', paidCases: '2', aov: '15.415.000 đ', seedSpend: '0 đ' },
+        { date: '13-10-2026', fbSpend: '5.139.774 đ', fbMess: '8', fbQMess: '1', fbLeadCrm: '10', fbCplQMess: '5.139.774 đ', zaloSpend: '0 đ', zaloMess: '0', ttSpend: '0 đ', ttConv: '0', revenue: '36.350.000 đ', paidCases: '6', aov: '6.058.333 đ', seedSpend: '0 đ' },
+        { date: '12-10-2026', fbSpend: '5.074.331 đ', fbMess: '14', fbQMess: '7', fbLeadCrm: '4', fbCplQMess: '724.904 đ', zaloSpend: '0 đ', zaloMess: '0', ttSpend: '0 đ', ttConv: '0', revenue: '23.386.000 đ', paidCases: '4', aov: '5.846.500 đ', seedSpend: '23.823 đ' },
+        { date: '11-10-2026', fbSpend: '5.659.052 đ', fbMess: '7', fbQMess: '5', fbLeadCrm: '4', fbCplQMess: '1.131.810 đ', zaloSpend: '0 đ', zaloMess: '0', ttSpend: '0 đ', ttConv: '0', revenue: '17.405.000 đ', paidCases: '2', aov: '8.702.500 đ', seedSpend: '95.871 đ' },
+        { date: '10-10-2026', fbSpend: '2.028.805 đ', fbMess: '3', fbQMess: '1', fbLeadCrm: '1', fbCplQMess: '2.028.805 đ', zaloSpend: '0 đ', zaloMess: '0', ttSpend: '0 đ', ttConv: '0', revenue: '81.483.120 đ', paidCases: '9', aov: '9.053.680 đ', seedSpend: '60.470 đ' },
+        { date: '09-10-2026', fbSpend: '4.415.687 đ', fbMess: '4', fbQMess: '2', fbLeadCrm: '2', fbCplQMess: '2.207.844 đ', zaloSpend: '0 đ', zaloMess: '0', ttSpend: '0 đ', ttConv: '0', revenue: '50.050.000 đ', paidCases: '3', aov: '16.683.333 đ', seedSpend: '79.887 đ' },
+        { date: '08-10-2026', fbSpend: '4.303.665 đ', fbMess: '14', fbQMess: '9', fbLeadCrm: '16', fbCplQMess: '478.185 đ', zaloSpend: '0 đ', zaloMess: '0', ttSpend: '116.522 đ', ttConv: '2', revenue: '79.702.000 đ', paidCases: '5', aov: '15.940.400 đ', seedSpend: '74.290 đ' },
+        { date: '07-10-2026', fbSpend: '4.371.247 đ', fbMess: '14', fbQMess: '5', fbLeadCrm: '35', fbCplQMess: '874.249 đ', zaloSpend: '0 đ', zaloMess: '0', ttSpend: '519.095 đ', ttConv: '22', revenue: '23.390.000 đ', paidCases: '4', aov: '5.847.500 đ', seedSpend: '117.410 đ' },
+        { date: '06-10-2026', fbSpend: '5.004.143 đ', fbMess: '16', fbQMess: '8', fbLeadCrm: '76', fbCplQMess: '625.518 đ', zaloSpend: '1.122.733 đ', zaloMess: '6', ttSpend: '1.043.185 đ', ttConv: '26', revenue: '46.236.000 đ', paidCases: '6', aov: '7.706.000 đ', seedSpend: '147.807 đ' },
+        { date: '05-10-2026', fbSpend: '7.557.395 đ', fbMess: '24', fbQMess: '12', fbLeadCrm: '65', fbCplQMess: '629.783 đ', zaloSpend: '632.805 đ', zaloMess: '4', ttSpend: '1.031.758 đ', ttConv: '39', revenue: '10.904.000 đ', paidCases: '3', aov: '3.634.667 đ', seedSpend: '88.044 đ' },
+        { date: '04-10-2026', fbSpend: '8.197.110 đ', fbMess: '24', fbQMess: '10', fbLeadCrm: '9', fbCplQMess: '819.711 đ', zaloSpend: '1.109.583 đ', zaloMess: '6', ttSpend: '1.023.410 đ', ttConv: '34', revenue: '2.000.000 đ', paidCases: '1', aov: '2.000.000 đ', seedSpend: '96.260 đ' },
+        { date: '03-10-2026', fbSpend: '6.584.391 đ', fbMess: '18', fbQMess: '11', fbLeadCrm: '8', fbCplQMess: '598.581 đ', zaloSpend: '508.479 đ', zaloMess: '3', ttSpend: '1.034.483 đ', ttConv: '22', revenue: '27.875.000 đ', paidCases: '2', aov: '13.937.500 đ', seedSpend: '58.604 đ' },
+        { date: '02-10-2026', fbSpend: '6.176.332 đ', fbMess: '14', fbQMess: '7', fbLeadCrm: '12', fbCplQMess: '882.333 đ', zaloSpend: '1.835.400 đ', zaloMess: '11', ttSpend: '1.000.523 đ', ttConv: '13', revenue: '27.290.000 đ', paidCases: '3', aov: '9.096.667 đ', seedSpend: '82.320 đ' },
+        { date: '01-10-2026', fbSpend: '4.906.951 đ', fbMess: '13', fbQMess: '5', fbLeadCrm: '18', fbCplQMess: '981.390 đ', zaloSpend: '190.000 đ', zaloMess: '2', ttSpend: '927.632 đ', ttConv: '0', revenue: '20.400.000 đ', paidCases: '1', aov: '20.400.000 đ', seedSpend: '121.905 đ' }
+      ],
+      leadSources: [
+        { source: 'TikTok', entered: '153', unentered: '5', paidCase: '0', ratio: '57,7%' },
+        { source: 'Facebook', entered: '98', unentered: '6', paidCase: '10', ratio: '38,0%' },
+        { source: 'Pla Test', entered: '0', unentered: '8', paidCase: '0', ratio: '2,9%' },
+        { source: 'Website', entered: '2', unentered: '2', paidCase: '0', ratio: '1,5%' },
+        { source: 'REFFERAL (Tính 50%)', entered: '3', unentered: '0', paidCase: '3', ratio: '1,1%' },
+        { source: 'Zalo OA', entered: '2', unentered: '1', paidCase: '1', ratio: '1,1%' },
+        { source: 'Seeding', entered: '1', unentered: '0', paidCase: '1', ratio: '0,4%' },
+        { source: 'Walking', entered: '1', unentered: '0', paidCase: '0', ratio: '0,4%' }
+      ],
+      leadCenterQuality: [
+        { status: 'Đủ tiêu chuẩn', count: '84', ratio: '52,2%' },
+        { status: 'Tiếp nhận', count: '44', ratio: '27,3%' },
+        { status: 'Không đủ TC', count: '33', ratio: '20,5%' }
+      ],
+      crmStatuses: [
+        { status: 'Không tiềm năng', count: '176', ratio: '67,7%', tiktokCount: '140' },
+        { status: 'Đang chăm sóc', count: '30', ratio: '11,5%', tiktokCount: '0' },
+        { status: 'Chưa thể contact', count: '17', ratio: '6,5%', tiktokCount: '13' },
+        { status: 'Paid case', count: '15', ratio: '5,8%', tiktokCount: '0' },
+        { status: 'Đã book test', count: '13', ratio: '5,0%', tiktokCount: '0' },
+        { status: 'Failed case', count: '5', ratio: '1,9%', tiktokCount: '0' },
+        { status: 'Đang chờ gọi', count: '2', ratio: '0,8%', tiktokCount: '0' },
+        { status: 'Consider / Tiềm năng', count: '2', ratio: '0,8%', tiktokCount: '0' }
+      ],
+      unconvertedMess: [
+        { tag: '#tuongtactot', reason: 'Mess tương tác tốt', count: '21', vsReceived: '47,7%', vsTotal: '18,3%' },
+        { tag: '#khongphanhoi', reason: 'Không phản hồi tiếp', count: '17', vsReceived: '38,6%', vsTotal: '14,8%' },
+        { tag: '#vegia', reason: 'Chỉ quan tâm giá', count: '3', vsReceived: '6,8%', vsTotal: '2,6%' },
+        { tag: '#vediadiem', reason: 'Có địa điểm ko hợp', count: '3', vsReceived: '6,8%', vsTotal: '2,6%' },
+        { tag: '#ngoaitinh', reason: 'Khai báo ngoại tỉnh', count: '2', vsReceived: '-', vsTotal: '1,7%' }
+      ],
+      branchRevenue: [
+        { branch: 'CN2 - THỐNG NHẤT (Gò Vấp)', revenue: '174.206.000 đ', ratio: '37,90%' },
+        { branch: 'ONLINE', revenue: '130.415.120 đ', ratio: '28,37%' },
+        { branch: 'CN4 - QUẬN 10', revenue: '107.130.000 đ', ratio: '23,30%' },
+        { branch: 'CN3 - BÌNH THẠNH', revenue: '35.075.000 đ', ratio: '7,63%' },
+        { branch: 'CN5 - TÂN BÌNH', revenue: '12.875.000 đ', ratio: '2,80%' },
+        { branch: 'CN1 - TRẦN VĂN GIÁP', revenue: '0 đ', ratio: '0,00%' }
+      ],
+      customerSegments: [
+        { segment: 'Khách cũ nhóm', count: '19', ratio: '38,8%', revenue: '177.362.520 đ' },
+        { segment: 'Khách mới nhóm', count: '21', ratio: '42,9%', revenue: '160.805.000 đ' },
+        { segment: 'Khách referral 1-1 mới', count: '1', ratio: '2,0%', revenue: '61.202.000 đ' },
+        { segment: 'Khách referral nhóm mới', count: '4', ratio: '8,2%', revenue: '26.905.600 đ' },
+        { segment: 'Khách ref nhóm cũ', count: '1', ratio: '2,0%', revenue: '18.686.000 đ' },
+        { segment: 'Khách mới 1-1', count: '1', ratio: '2,0%', revenue: '15.000.000 đ' }
+      ],
+      salesPerformance: [
+        { name: 'Thuyên', leads: '21', students: '8', revenue: '180.987.000 đ', cr: '38%' },
+        { name: 'Khải', leads: '18', students: '13', revenue: '100.729.120 đ', cr: '72%' },
+        { name: 'Hà', leads: '21', students: '8', revenue: '87.670.000 đ', cr: '38%' },
+        { name: 'Phương', leads: '15', students: '6', revenue: '40.125.000 đ', cr: '40%' },
+        { name: 'Kiệt', leads: '16', students: '4', revenue: '36.000.000 đ', cr: '25%' },
+        { name: 'Duy', leads: '10', students: '3', revenue: '21.790.000 đ', cr: '30%' },
+        { name: 'Chi', leads: '6', students: '1', revenue: '10.000.000 đ', cr: '17%' }
+      ],
+      duThu: [
+        ['Huỳnh Quang Khải', '90.800.000 đ', '27,8%', '19.700.000 đ', '71.100.000 đ'],
+        ['Nguyễn Huỳnh Thanh Phương', '67.380.000 đ', '20,7%', '28.780.000 đ', '38.600.000 đ'],
+        ['Trần Thị Thanh Hà', '59.687.000 đ', '18,3%', '0 đ', '59.687.000 đ'],
+        ['Nguyễn Hoàng Anh Kiệt', '59.020.000 đ', '18,1%', '0 đ', '59.020.000 đ'],
+        ['Nguyễn Văn Thanh Thuyên', '19.170.000 đ', '5,9%', '0 đ', '19.170.000 đ'],
+        ['Phạm Công Danh', '18.000.000 đ', '5,5%', '0 đ', '18.000.000 đ'],
+        ['Nguyễn Thị Mỹ Chi', '12.000.000 đ', '3,7%', '12.000.000 đ', '0 đ']
+      ]
+    };
+
+    let trendChart = null;
+
+    function parseVN(str) {
+      if (!str) return 0;
+      const cleaned = String(str).replace(/[^\d,-]/g, '').replace(/\./g, '').replace(',', '.');
+      return parseFloat(cleaned) || 0;
+    }
+
+    function renderDashboard() {
+      const ov = STATE.overview;
+      const dt = STATE.dailyTotal || {};
+
+      document.getElementById('sideDateRange').innerText = `${ov.startDate} - ${ov.endDate}`;
+      document.getElementById('sideFinalLead').innerText = `${ov.targetLead.actual} MQL`;
+
+      document.getElementById('kpiRevActual').innerText = ov.revenue.actual;
+      document.getElementById('kpiRevTarget').innerText = ov.revenue.target;
+      document.getElementById('kpiRevPct').innerText = ov.revenue.pct;
+      document.getElementById('barRev').style.width = Math.min(parseVN(ov.revenue.pct), 100) + '%';
+
+      document.getElementById('kpiBudgetSpent').innerText = ov.budget.spent;
+      document.getElementById('kpiBudgetTotal').innerText = ov.budget.total;
+      document.getElementById('kpiBudgetRemPct').innerText = ov.budget.remainingPct;
+      document.getElementById('kpiDailyAvg').innerText = ov.budget.dailyAvg;
+
+      document.getElementById('kpiLeadActual').innerText = ov.targetLead.actual + ' Leads';
+      document.getElementById('kpiLeadTarget').innerText = ov.targetLead.target + ' Leads';
+      document.getElementById('kpiLeadPct').innerText = ov.targetLead.pct;
+      document.getElementById('barLead').style.width = Math.min(parseVN(ov.targetLead.pct), 100) + '%';
+
+      document.getElementById('kpiM2LActual').innerText = ov.messToLead.actual;
+      document.getElementById('kpiM2LTarget').innerText = ov.messToLead.target;
+      document.getElementById('kpiCostMessActual').innerText = ov.costPerMess.actual;
+      document.getElementById('kpiCostMessTarget').innerText = ov.costPerMess.target;
+
+      document.getElementById('kpiPaidCases').innerText = (dt.paidCases || '0') + ' Cases';
+      document.getElementById('kpiAov').innerText = dt.aov || '0 đ';
+      document.getElementById('kpiTotalMessLine').innerText = `Tổng Mess (H34): ${dt.fbMess || '0'} | Q-Mess (I34): ${dt.fbQMess || '0'}`;
+      document.getElementById('seedingTotal').innerText = `${dt.seedSpend || '0 đ'} (${dt.seedMess || '0'} Mess)`;
+
+      document.getElementById('leadFormulaList').innerHTML = (ov.leadFormulaBreakdown || []).filter(f => f.label).map(f => `
+        <div class="flex justify-between py-0.5">
+          <span>${f.label}:</span>
+          <strong class="text-itts-navy">${f.val}</strong>
+        </div>
+      `).join('');
+
+      document.getElementById('channelBudgetList').innerHTML = (ov.channelBudget || []).map(c => {
+        const b = parseVN(c.budget);
+        const s = parseVN(c.spent);
+        const pct = b > 0 ? Math.round((s / b) * 100) : 0;
+        const isOver = pct > 100;
+        return `
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="text-itts-navy">${c.channel} <span class="text-[10px] text-slate-400">(KV: ${c.expectedLeads} Lead)</span></span>
+              <span class="${isOver ? 'text-itts-red' : 'text-slate-700'}">${c.spent} / ${c.budget} (${pct}%)</span>
+            </div>
+            <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden mt-1.5">
+              <div class="h-full ${isOver ? 'bg-itts-red' : 'bg-slate-800'}" style="width: ${Math.min(pct, 100)}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('tableLeadSources').innerHTML = (STATE.leadSources || []).map(s => `
+        <tr class="hover:bg-red-50/40">
+          <td class="py-2 px-2 font-bold text-itts-navy">${s.source}</td>
+          <td class="py-2 px-2 text-center font-semibold">${s.entered}</td>
+          <td class="py-2 px-2 text-center text-amber-600 font-bold">${s.unentered}</td>
+          <td class="py-2 px-2 text-center text-emerald-600 font-extrabold">${s.paidCase}</td>
+          <td class="py-2 px-2 text-right font-bold text-slate-500">${s.ratio}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('crmStatusContainer').innerHTML = (STATE.crmStatuses || []).map(st => `
+        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 flex items-center justify-between text-xs">
+          <div>
+            <span class="font-bold text-itts-navy">${st.status}</span>
+            ${parseVN(st.tiktokCount) > 0 ? `<span class="ml-1.5 text-[10px] px-1.5 py-0.5 rounded bg-red-50 text-itts-red font-bold">TikTok: ${st.tiktokCount}</span>` : ''}
+          </div>
+          <div class="text-right">
+            <strong class="text-itts-navy">${st.count}</strong>
+            <span class="text-[11px] text-slate-400 ml-1">(${st.ratio})</span>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('leadCenterList').innerHTML = (STATE.leadCenterQuality || []).map(q => `
+        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+          <p class="text-[10px] font-bold text-slate-400 uppercase">${q.status}</p>
+          <p class="text-base font-extrabold text-itts-navy mt-0.5">${q.count}</p>
+          <p class="text-[10px] font-bold text-itts-red">${q.ratio}</p>
+        </div>
+      `).join('');
+
+      document.getElementById('unconvertedMessList').innerHTML = (STATE.unconvertedMess || []).map(u => `
+        <div class="flex items-center justify-between text-xs p-2 rounded-lg bg-slate-50 border border-slate-200/60">
+          <div>
+            <span class="font-bold text-itts-navy">${u.reason}</span>
+            <span class="text-[10px] text-slate-400 ml-1">(${u.tag})</span>
+          </div>
+          <div class="text-right">
+            <strong class="text-itts-red">${u.count} Mess</strong>
+            <span class="text-[10px] text-slate-500 ml-1">(${u.vsReceived} TN)</span>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('branchRevList').innerHTML = (STATE.branchRevenue || []).map(b => `
+        <div>
+          <div class="flex justify-between text-xs font-bold mb-1">
+            <span class="text-itts-navy">${b.branch}</span>
+            <span class="text-itts-red">${b.revenue} <span class="text-slate-400 font-normal">(${b.ratio})</span></span>
+          </div>
+          <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-full itts-gradient" style="width: ${Math.min(parseVN(b.ratio), 100)}%"></div>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('segmentRevList').innerHTML = (STATE.customerSegments || []).map(seg => `
+        <div class="flex justify-between items-center text-xs py-1 border-b border-slate-100 last:border-0">
+          <span class="font-semibold text-slate-700">${seg.segment} <strong class="text-itts-navy">(${seg.count} HV)</strong></span>
+          <strong class="text-slate-900">${seg.revenue}</strong>
+        </div>
+      `).join('');
+
+      document.getElementById('salesRepTable').innerHTML = (STATE.salesPerformance || []).map(s => `
+        <tr class="hover:bg-red-50/40">
+          <td class="py-2.5 px-2.5 font-extrabold text-itts-navy">${s.name}</td>
+          <td class="py-2.5 px-2 text-center">${s.leads}</td>
+          <td class="py-2.5 px-2 text-center font-bold text-emerald-600">${s.students}</td>
+          <td class="py-2.5 px-2.5 text-right font-bold text-itts-navy">${s.revenue}</td>
+          <td class="py-2.5 px-2 text-right"><span class="px-2 py-0.5 rounded bg-red-50 text-itts-red font-extrabold text-[10px]">${s.cr}</span></td>
+        </tr>
+      `).join('');
+
+      let overdueSum = 0;
+      document.getElementById('duThuListBox').innerHTML = (STATE.duThu || []).map(r => {
+        const overVal = parseVN(r[3]);
+        overdueSum += overVal;
+        const hasOver = overVal > 0;
+        return `
+          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex justify-between items-center text-xs">
+            <div>
+              <p class="font-extrabold text-itts-navy">${r[0]} <span class="text-[10px] text-slate-400">(${r[2]})</span></p>
+              <p class="text-[11px] text-slate-500">Phải thu: <strong class="text-slate-800">${r[1]}</strong></p>
+            </div>
+            <div class="text-right">
+              ${hasOver ? `<span class="text-[11px] font-extrabold text-itts-red block">Quá hạn: ${r[3]}</span>` : `<span class="text-[11px] font-bold text-emerald-600 block">Đúng hạn</span>`}
+              <span class="text-[10px] text-amber-600 font-semibold">Chờ: ${r[4]}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('totalOverdueText').innerText = overdueSum.toLocaleString('vi-VN') + ' đ';
+
+      renderDailyLog();
+      renderTrendChart();
+    }
+
+    function renderDailyLog() {
+      const q = document.getElementById('filterDay').value.toLowerCase().trim();
+      const rows = (STATE.dailyRows || []).filter(r => !q || r.date.toLowerCase().includes(q));
+      const dt = STATE.dailyTotal || {};
+
+      document.getElementById('dailyLogBody').innerHTML = rows.map(r => `
+        <tr class="hover:bg-red-50/40 transition">
+          <td class="py-2.5 px-3 font-extrabold text-itts-navy whitespace-nowrap">${r.date}</td>
+          <td class="py-2.5 px-3 text-right font-semibold text-blue-900 whitespace-nowrap">${r.fbSpend || '0 đ'}</td>
+          <td class="py-2.5 px-2.5 text-center font-bold">${r.fbMess || '0'}</td>
+          <td class="py-2.5 px-2.5 text-center font-bold text-emerald-600">${r.fbQMess || '0'}</td>
+          <td class="py-2.5 px-2.5 text-center font-bold text-blue-600">${r.fbLeadCrm || '0'}</td>
+          <td class="py-2.5 px-3 text-right text-slate-500 whitespace-nowrap">${r.fbCplQMess || '-'}</td>
+          <td class="py-2.5 px-3 text-right whitespace-nowrap">${r.zaloSpend || '0 đ'}</td>
+          <td class="py-2.5 px-2.5 text-center">${r.zaloMess || '0'}</td>
+          <td class="py-2.5 px-3 text-right whitespace-nowrap">${r.ttSpend || '0 đ'}</td>
+          <td class="py-2.5 px-2.5 text-center">${r.ttConv || '0'}</td>
+          <td class="py-2.5 px-3 text-right font-extrabold text-itts-red whitespace-nowrap">${r.revenue || '0 đ'}</td>
+          <td class="py-2.5 px-2.5 text-center font-extrabold text-itts-navy">${r.paidCases || '0'}</td>
+          <td class="py-2.5 px-3 text-right whitespace-nowrap">${r.aov || '-'}</td>
+          <td class="py-2.5 px-3 text-right text-slate-400 whitespace-nowrap">${r.seedSpend || '0 đ'}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('dailyLogFoot').innerHTML = `
+        <tr>
+          <td class="py-3 px-3">TỔNG (Dòng 34)</td>
+          <td class="py-3 px-3 text-right">${dt.fbSpend || ''}</td>
+          <td class="py-3 px-2.5 text-center">${dt.fbMess || ''}</td>
+          <td class="py-3 px-2.5 text-center text-emerald-400">${dt.fbQMess || ''}</td>
+          <td class="py-3 px-2.5 text-center text-sky-400">${dt.fbLeadCrm || ''}</td>
+          <td class="py-3 px-3 text-right">${dt.fbCplQMess || ''}</td>
+          <td class="py-3 px-3 text-right">${dt.zaloSpend || ''}</td>
+          <td class="py-3 px-2.5 text-center">${dt.zaloMess || ''}</td>
+          <td class="py-3 px-3 text-right">${dt.ttSpend || ''}</td>
+          <td class="py-3 px-2.5 text-center">${dt.ttConv || ''}</td>
+          <td class="py-3 px-3 text-right text-amber-300">${dt.revenue || ''}</td>
+          <td class="py-3 px-2.5 text-center">${dt.paidCases || ''}</td>
+          <td class="py-3 px-3 text-right">${dt.aov || ''}</td>
+          <td class="py-3 px-3 text-right">${dt.seedSpend || ''}</td>
+        </tr>
+      `;
+    }
+
+    function renderTrendChart() {
+      const chronological = [...(STATE.dailyRows || [])].reverse();
+      const labels = chronological.map(r => r.date.slice(0, 5));
+      const revSeries = chronological.map(r => parseVN(r.revenue) / 1000000);
+      const spendSeries = chronological.map(r => (parseVN(r.fbSpend) + parseVN(r.zaloSpend) + parseVN(r.ttSpend)) / 1000000);
+
+      const ctx = document.getElementById('chartDailyTrend').getContext('2d');
+      if (trendChart) trendChart.destroy();
+
+      trendChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              type: 'line',
+              label: 'Tổng Chi Ads Ngày (Triệu đ)',
+              data: spendSeries,
+              borderColor: '#0F172A',
+              backgroundColor: '#0F172A',
+              borderWidth: 2.5,
+              tension: 0.3,
+              yAxisID: 'y1'
+            },
+            {
+              type: 'bar',
+              label: 'Doanh Thu Ngày (Triệu đ)',
+              data: revSeries,
+              backgroundColor: '#D91F26',
+              borderRadius: 6,
+              barPercentage: 0.55,
+              yAxisID: 'y'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { ticks: { color: '#475569', font: { weight: '700', size: 10 } }, grid: { display: false } },
+            y: { position: 'left', ticks: { color: '#D91F26', font: { weight: '700', size: 10 } }, grid: { color: '#F1F5F9' } },
+            y1: { position: 'right', ticks: { color: '#0F172A', font: { weight: '700', size: 10 } }, grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function showSection(sec) {
+      const map = {
+        all: ['sec-overview', 'sec-leads', 'sec-revenue', 'sec-daily'],
+        leads: ['sec-leads'],
+        revenue: ['sec-revenue'],
+        daily: ['sec-daily']
+      };
+      ['sec-overview', 'sec-leads', 'sec-revenue', 'sec-daily'].forEach(id => {
+        document.getElementById(id).style.display = map[sec].includes(id) ? '' : 'none';
+      });
+      ['all', 'leads', 'revenue', 'daily'].forEach(b => {
+        const el = document.getElementById('btn-' + b);
+        el.className = b === sec
+          ? 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold itts-gradient text-white shadow-sm shadow-red-600/20'
+          : 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-red-50 hover:text-itts-red transition';
+      });
+    }
+
+    function fetchPeriodData() {
+      const y = parseInt(document.getElementById('selYear').value, 10);
+      const m = parseInt(document.getElementById('selMonth').value, 10);
+      const badge = document.getElementById('liveBadge');
+      badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span> Đang tính toán trên Sheet...';
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(res => {
+          if (res && res.status === 'success') {
+            STATE = res;
+            renderDashboard();
+            badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Đã đồng bộ (' + res.updatedAt + ')';
+            document.getElementById('sideUpdated').innerText = res.updatedAt;
+          }
+        }).getFullDashboardData(y, m);
+      } else if (APPS_SCRIPT_URL) {
+        fetch(`${APPS_SCRIPT_URL}?mode=api&year=${y}&month=${m}`, { redirect: 'follow' })
+          .then(r => r.json())
+          .then(res => {
+            if (res && res.status === 'success') {
+              STATE = res;
+              renderDashboard();
+              badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Đã đồng bộ (' + res.updatedAt + ')';
+              document.getElementById('sideUpdated').innerText = res.updatedAt;
+            }
+          })
+          .catch(err => {
+            console.warn('Lỗi kết nối API:', err);
+            badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500"></span> Đang hiển thị bản lưu T10/2026';
+          });
+      }
+    }
+
+    window.onload = () => {
+      renderDashboard();
+      fetchPeriodData();
+    };
+  </script>
+</body>
+</html>
